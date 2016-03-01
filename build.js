@@ -15,7 +15,7 @@ module.exports = () => {
     }
 
     opts = opts || {}
-    opts.path = opts.path || Path.join(process.cwd(), 'build')
+    opts.dir = opts.dir || Path.join(process.cwd(), 'build')
 
     var queue = buildQueues[url] = buildQueues[url] || Async.queue(build)
     return queue.push({url: url, commit: commit, options: opts}, cb)
@@ -23,32 +23,34 @@ module.exports = () => {
 }
 
 function build (task, cb) {
-  var buildPath = task.options.path
-  var repoPath = Path.join(buildPath, getRepoName(task.url))
+  var buildDir = task.options.dir
+  var repoDir = Path.join(buildDir, getRepoName(task.url))
 
   Async.waterfall([
     // Ensure build dir exists
-    (cb) => mkdirp(buildPath, cb),
+    (cb) => mkdirp(buildDir, cb),
     // Determine if newly created or existing
-    (made, cb) => Fs.access(repoPath, Fs.F_OK, (err) => cb(null, !err)),
+    (made, cb) => Fs.access(repoDir, Fs.F_OK, (err) => cb(null, !err)),
     // Clone or pull the repo
     (exists, cb) => {
       if (exists) {
-        Git.checkout(repoPath, 'master', task.options, (err) => {
+        Git.checkout(repoDir, 'master', task.options, (err) => {
           if (err) return cb(err)
-          Git.pull(repoPath, task.options, cb)
+          Git.pull(repoDir, task.options, cb)
         })
       } else {
-        Git.clone(buildPath, task.url, task.options, cb)
+        Git.clone(buildDir, task.url, task.options, cb)
       }
     },
     // Checkout the commit
-    (cb) => Git.checkout(repoPath, task.commit, task.options, cb),
+    (cb) => Git.checkout(repoDir, task.commit, task.options, cb),
     // npm install
-    (cb) => Npm.install(repoPath, task.options, cb),
+    (cb) => Npm.install(repoDir, task.options, cb),
     // npm run build
-    (cb) => Npm.run(repoPath, 'build', task.options, cb)
+    (cb) => Npm.run(repoDir, 'build', task.options, cb)
   ], cb)
+
+  return repoDir
 }
 
 function getRepoName (url) {

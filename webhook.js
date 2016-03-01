@@ -21,12 +21,12 @@ module.exports = (build, deploy, opts, cb) => {
 
     console.log(`Commencing build ${name}`)
 
-    build(repo.clone_url, repo.head_commmit.id, opts.build, (err) => {
+    var dir = build(repo.clone_url, repo.head_commmit.id, opts.build, (err) => {
       if (err) return console.error(`Failed to build ${name}`, err)
 
       console.log(`Successfully built ${name}`)
 
-      deploy(repo.clone_url, repo.head_commmit.id, opts.deploy, (err) => {
+      deploy(dir, opts.deploy, (err) => {
         if (err) return console.error(`Failed to deploy ${name}`, err)
         console.log(`Successfully deployed ${name}`)
       })

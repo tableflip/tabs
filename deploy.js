@@ -1,5 +1,5 @@
 module.exports = () => {
-  return (url, commit, opts, cb) => {
+  return (dir, opts, cb) => {
     console.warn('Not implemented')
     cb()
   }

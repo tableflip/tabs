@@ -8,7 +8,7 @@ var config = require('rc')('builder', {
     port: 7777
   },
   build: {
-    path: Path.join(process.cwd(), 'build'),
+    dir: Path.join(process.cwd(), 'build'),
     stdout: process.stdout,
     stderr: process.stderr
   },

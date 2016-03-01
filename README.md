@@ -14,7 +14,7 @@
         port: 7777
       },
       build: {
-        path: './build'
+        dir: './build'
       }
     }
     ```
@@ -30,5 +30,7 @@ var url = 'https://github.com/tableflip/tableflip-www.git'
 var commit = 'a0342ede2ea56c799d8ad40937267ba2875e9d88'
 var opts = {stdout: process.stdout, stderr: process.stderr}
 
-build(url, commit, opts, (err) => console.log('done'))
+var dir = build(url, commit, opts, (err) => console.log('done'))
+
+console.log(`Building in ${dir}`)
 ```

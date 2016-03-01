@@ -17,7 +17,7 @@ test('Should build initiate build and deploy when webhook received', (t) => {
     cb()
   })
 
-  var deploy = (url, commit, opts, cb) => process.nextTick(() => {
+  var deploy = (dir, opts, cb) => process.nextTick(() => {
     t.ok(true, 'Deploy triggered')
     cb()
   })
