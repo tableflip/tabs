@@ -1,0 +1,22 @@
+{
+  "name": "the-platform-builder",
+  "version": "0.0.0",
+  "description": "Builder for the TABLEFLIP plaftform",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node bin/server",
+    "test": "standard && tape test/*.js"
+  },
+  "author": "TABLEFLIP",
+  "dependencies": {
+    "async": "^1.5.2",
+    "github-webhook-handler": "^0.5.0",
+    "mkdirp": "^0.5.1",
+    "rc": "^1.1.6",
+    "tape": "^4.4.0"
+  },
+  "devDependencies": {
+    "standard": "^6.0.7"
+  }
+}
