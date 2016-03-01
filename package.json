@@ -1,9 +1,9 @@
 {
   "name": "the-platform-builder",
   "version": "0.0.0",
-  "description": "Builder for the TABLEFLIP plaftform",
+  "description": "Builder for the TABLEFLIP platform",
   "private": true,
-  "main": "index.js",
+  "main": "build.js",
   "scripts": {
     "start": "node bin/server",
     "test": "standard && tape test/*.js"

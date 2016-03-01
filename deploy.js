@@ -1,3 +1,6 @@
-module.exports = (url, commit, opts, cb) => {
-  throw new Error('Not implemented')
+module.exports = () => {
+  return (url, commit, opts, cb) => {
+    console.warn('Not implemented')
+    cb()
+  }
 }

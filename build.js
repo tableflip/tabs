@@ -5,19 +5,21 @@ var Async = require('async')
 var Git = require('./git')
 var Npm = require('./npm')
 
-var buildQueues = {}
+module.exports = () => {
+  var buildQueues = {}
 
-module.exports = (url, commit, opts, cb) => {
-  if (!cb) {
-    cb = opts
-    opts = {}
+  return (url, commit, opts, cb) => {
+    if (!cb) {
+      cb = opts
+      opts = {}
+    }
+
+    opts = opts || {}
+    opts.path = opts.path || Path.join(process.cwd(), 'build')
+
+    var queue = buildQueues[url] = buildQueues[url] || Async.queue(build)
+    return queue.push({url: url, commit: commit, options: opts}, cb)
   }
-
-  opts = opts || {}
-  opts.path = opts.path || Path.join(process.cwd(), 'build')
-
-  var queue = buildQueues[url] = buildQueues[url] || Async.queue(build)
-  return queue.push({url: url, commit: commit, options: opts}, cb)
 }
 
 function build (task, cb) {
