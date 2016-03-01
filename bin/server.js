@@ -7,7 +7,7 @@ var Config = require('rc')('builder', {
     secret: '(╯°□°）╯︵TABLEFLIP',
     port: 7777
   },
-  builder: {
+  build: {
     path: Path.join(process.cwd(), 'build'),
     stdout: process.stdout,
     stderr: process.stderr
@@ -17,7 +17,7 @@ var Config = require('rc')('builder', {
 var createWebhookServer = require('../webhook')
 var createBuilder = require('../')
 
-var builder = createBuilder(Config.builder)
+var builder = createBuilder(Config.build)
 
 var server = createWebhookServer(builder, Config.webhook, () => {
   console.log('Webhook server running on %j', server.address())

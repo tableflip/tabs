@@ -18,5 +18,19 @@
   },
   "devDependencies": {
     "standard": "^6.0.7"
-  }
+  },
+  "bin": {
+    "the-platform-builder": "server.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tableflip/the-platform-builder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tableflip/the-platform-builder/issues"
+  },
+  "homepage": "https://github.com/tableflip/the-platform-builder#readme"
 }
