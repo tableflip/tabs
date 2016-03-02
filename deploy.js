@@ -77,7 +77,7 @@ function deploy (task, cb) {
     // Remove old files
     (cb) => rimraf(Path.join(repoDir, '**/!(.git)'), {dot: true}, cb),
     // Copy new files
-    (cb) => cpr(Path.join(task.dir, 'dist'), repoDir, cb),
+    (cb) => cpr(Path.join(task.dir, 'dist'), repoDir, {overwrite: true}, cb),
     // Detect if something changed
     (files, cb) => Git.isClean(repoDir, task.options, cb),
     // Commit & push
