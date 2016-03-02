@@ -34,3 +34,17 @@ build(repo, commit, opts, (err, info) => {
   console.log(`Built in ${info.dir}`)
 })
 ```
+
+**deploy.js**
+```js
+var build = require('./deploy')()
+
+var dir = '/path/to/built/tableflip-www'
+var repo = 'https://github.com/tableflip/tableflip-www.git'
+var opts = {stdout: process.stdout, stderr: process.stderr}
+
+// Deploy built `dir` to `repo` on `branch`
+deploy(dir, repo, 'gh-pages', opts, (err) => {
+  console.log(`Deployed`)
+})
+```
