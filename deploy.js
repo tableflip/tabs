@@ -75,7 +75,7 @@ function deploy (task, cb) {
       Async.waterfall(tasks, cb)
     },
     // Remove old files
-    (cb) => rimraf(Path.join(repoDir, '{**/*,!.git}'), {dot: true}, cb),
+    (cb) => rimraf(Path.join(repoDir, '**/!(.git)'), {dot: true}, cb),
     // Copy new files
     (cb) => cpr(Path.join(task.dir, 'dist'), repoDir, cb),
     // Detect if something changed
