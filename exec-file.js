@@ -1,4 +1,5 @@
 var ChildProcess = require('child_process')
+var xtend = require('xtend')
 
 module.exports = function (file, args, cwd, opts, cb) {
   if (!cb) {
@@ -17,7 +18,13 @@ module.exports = function (file, args, cwd, opts, cb) {
     opts.stdout.write(command)
   }
 
-  var proc = ChildProcess.execFile(file, args, {cwd: cwd}, cb)
+  var execOpts = {cwd: cwd}
+
+  if (opts.env) {
+    execOpts = xtend(execOpts, {env: opts.env})
+  }
+
+  var proc = ChildProcess.execFile(file, args, execOpts, cb)
 
   if (opts.stdout) proc.stdout.pipe(opts.stdout)
   if (opts.stderr) proc.stderr.pipe(opts.stderr)
