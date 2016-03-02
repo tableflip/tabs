@@ -1,15 +1,64 @@
 var execFile = require('./exec-file')
 
-module.exports = {
-  checkout (path, commit, opts, cb) {
-    execFile('git', ['checkout', commit], path, opts, cb)
+var Git = {
+  checkout (cwd, commit, opts, cb) {
+    execFile('git', ['checkout', commit], cwd, opts, (err) => cb(err))
   },
 
-  pull (path, opts, cb) {
-    execFile('git', 'pull', path, opts, cb)
+  pull (cwd, remote, branch, opts, cb) {
+    execFile('git', ['pull', remote, branch], cwd, opts, (err) => cb(err))
   },
 
-  clone (path, url, opts, cb) {
-    execFile('git', ['clone', url], path, opts, cb)
+  clone (cwd, repo, opts, cb) {
+    var args = ['clone', repo]
+    if (opts.cloneDir) args.push(opts.cloneDir)
+    execFile('git', args, cwd, opts, (err) => cb(err))
+  },
+
+  branch (cwd, name, opts, cb) {
+    var args = ['branch', name]
+    if (opts && opts.startPoint) args.push(opts.startPoint)
+    execFile('git', args, cwd, opts, (err) => cb(err))
+  },
+
+  push (cwd, remote, branch, opts, cb) {
+    execFile('git', ['push', remote, branch], cwd, opts, (err) => cb(err))
+  },
+
+  add () {
+    throw new Error('Not implemented')
+  },
+
+  commit (cwd, msg, opts, cb) {
+    execFile('git', ['commit', '-m', msg], cwd, opts, (err) => cb(err))
+  },
+
+  isClean (cwd, opts, cb) {
+    execFile('git', 'status', cwd, opts, (err, stdout) => {
+      if (err) return cb(err)
+      cb(null, stdout.toString().indexOf('working directory clean') > -1)
+    })
   }
 }
+
+Git.branch.list = () => {
+  throw new Error('Not implemented')
+}
+
+Git.branch.list.all = (cwd, opts, cb) => {
+  execFile('git', ['branch', '--list', '--all'], cwd, opts, (err, stdout) => {
+    if (err) return cb(err)
+
+    var branches = stdout.toString().trim().split('\n').map((branch) => {
+      return branch.trim().replace(/[\s\*]/g, '')
+    })
+
+    cb(null, branches)
+  })
+}
+
+Git.add.all = (cwd, opts, cb) => {
+  execFile('git', ['add', '-A'], cwd, opts, (err) => cb(err))
+}
+
+module.exports = Git

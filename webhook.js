@@ -18,15 +18,20 @@ module.exports = (build, deploy, opts, cb) => {
   handler.on('push', (event) => {
     var repo = event.payload.repository
     var name = `${repo.clone_url} @ ${repo.head_commmit.id}`
+    var ref = event.payload.ref
+
+    if (ref !== 'refs/heads/master') {
+      return console.log(`Ignoring push event to ${ref} on ${name}`)
+    }
 
     console.log(`Commencing build ${name}`)
 
-    var dir = build(repo.clone_url, repo.head_commmit.id, opts.build, (err) => {
+    build(repo.clone_url, repo.head_commmit.id, opts.build, (err, info) => {
       if (err) return console.error(`Failed to build ${name}`, err)
 
       console.log(`Successfully built ${name}`)
 
-      deploy(dir, opts.deploy, (err) => {
+      deploy(info.dir, repo.clone_url, 'gh-pages', opts.deploy, (err) => {
         if (err) return console.error(`Failed to deploy ${name}`, err)
         console.log(`Successfully deployed ${name}`)
       })

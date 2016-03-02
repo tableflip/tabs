@@ -1,15 +1,20 @@
 var test = require('tape')
 var build = require('../build')()
+var deploy = require('../deploy')()
 
-test('Should successfully build', (t) => {
-  t.plan(1)
+test('Should successfully deploy', (t) => {
+  t.plan(2)
 
   var repo = 'https://github.com/alanshaw/tableflip-www.git'
   var commit = 'master'
   var opts = {stdout: process.stdout, stderr: process.stderr}
 
-  build(repo, commit, opts, (err) => {
+  build(repo, commit, opts, (err, info) => {
     t.ifError(err, 'No error building')
-    t.end()
+
+    deploy(info.dir, repo, 'gh-pages', opts, (err) => {
+      t.ifError(err, 'No error deploying')
+      t.end()
+    })
   })
 })

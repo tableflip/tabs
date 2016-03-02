@@ -26,11 +26,11 @@
 ```js
 var build = require('./build')()
 
-var url = 'https://github.com/tableflip/tableflip-www.git'
+var repo = 'https://github.com/tableflip/tableflip-www.git'
 var commit = 'a0342ede2ea56c799d8ad40937267ba2875e9d88'
 var opts = {stdout: process.stdout, stderr: process.stderr}
 
-var dir = build(url, commit, opts, (err) => console.log('done'))
-
-console.log(`Building in ${dir}`)
+build(repo, commit, opts, (err, info) => {
+  console.log(`Built in ${info.dir}`)
+})
 ```

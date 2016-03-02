@@ -14,10 +14,10 @@ test('Should build initiate build and deploy when webhook received', (t) => {
 
   var build = (url, commit, opts, cb) => process.nextTick(() => {
     t.ok(true, 'Build triggered')
-    cb()
+    cb(null, {dir: '/FAKE/BUILD/DIR'})
   })
 
-  var deploy = (dir, opts, cb) => process.nextTick(() => {
+  var deploy = (dir, repo, branch, opts, cb) => process.nextTick(() => {
     t.ok(true, 'Deploy triggered')
     cb()
   })
@@ -27,6 +27,7 @@ test('Should build initiate build and deploy when webhook received', (t) => {
 
     var event = {
       payload: {
+        ref: 'refs/heads/master',
         repository: {
           clone_url: 'https://github.com/TEST/FAKE.git',
           head_commmit: {

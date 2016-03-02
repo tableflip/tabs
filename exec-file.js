@@ -12,7 +12,12 @@ module.exports = function (file, args, cwd, opts, cb) {
     args = [args]
   }
 
-  var proc = ChildProcess.execFile(file, args, {cwd: cwd}, (err) => cb(err))
+  if (opts.stdout) {
+    var command = '> ' + [file].concat(args).join(' ') + '\n'
+    opts.stdout.write(command)
+  }
+
+  var proc = ChildProcess.execFile(file, args, {cwd: cwd}, cb)
 
   if (opts.stdout) proc.stdout.pipe(opts.stdout)
   if (opts.stderr) proc.stderr.pipe(opts.stderr)
