@@ -20,6 +20,15 @@
     ```
 4. Start the webhook `npm start`
 
+## Configure a site to be built
+
+1. Navigate to **Settings** for the repo
+2. In **Collaborators**, add `tableflip-deploy` as a collaborator with **write** access
+3. in **Webhooks & services** add a new webhook with the following info:
+    * Payload URL: `http://builder.tableflip.io:7777/webhook`
+    * Content type: `application/json`
+    * Secret: **Retrieve from secrets.yaml in infrastructure project**
+
 ## Programmatic usage
 
 **build.js**
