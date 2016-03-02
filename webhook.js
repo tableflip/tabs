@@ -17,7 +17,13 @@ module.exports = (build, deploy, opts, cb) => {
   // https://developer.github.com/v3/activity/events/types/#pushevent
   handler.on('push', (event) => {
     var repo = event.payload.repository
-    var name = `${repo.clone_url} @ ${event.payload.head_commit.id}`
+    var headCommit = event.payload.head_commit
+
+    if (!repo || !headCommit) {
+      return console.warn('Ignoring unexpected push payload', event.payload)
+    }
+
+    var name = `${repo.clone_url} @ ${headCommit.id}`
     var ref = event.payload.ref
 
     if (ref !== 'refs/heads/master') {
@@ -26,7 +32,7 @@ module.exports = (build, deploy, opts, cb) => {
 
     console.log(`Commencing build ${name}`)
 
-    build(repo.clone_url, event.payload.head_commit.id, opts.build, (err, info) => {
+    build(repo.clone_url, headCommit.id, opts.build, (err, info) => {
       if (err) return console.error(`Failed to build ${name}`, err)
 
       console.log(`Successfully built ${name}`)
