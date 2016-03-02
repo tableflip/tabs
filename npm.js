@@ -12,7 +12,7 @@ module.exports = {
 
     // Ensure development NODE_ENV for installing dependencies since
     // devDependencies are used for building the site
-    opts.env = xtend(process.env, {NODE_ENV: 'development'}, opts.env)
+    opts.env = xtend(process.env, {NODE_ENV: 'development', npm_config_production: false}, opts.env)
 
     execFile('npm', 'install', path, opts, (err) => cb(err))
   },
