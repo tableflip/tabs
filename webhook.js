@@ -23,7 +23,7 @@ module.exports = (build, deploy, opts, cb) => {
       return console.warn('Ignoring unexpected push payload', event.payload)
     }
 
-    var name = `${repo.clone_url} @ ${headCommit.id}`
+    var name = `${repo.ssh_url} @ ${headCommit.id}`
     var ref = event.payload.ref
 
     if (ref !== 'refs/heads/master') {
@@ -32,12 +32,12 @@ module.exports = (build, deploy, opts, cb) => {
 
     console.log(`Commencing build ${name}`)
 
-    build(repo.clone_url, headCommit.id, opts.build, (err, info) => {
+    build(repo.ssh_url, headCommit.id, opts.build, (err, info) => {
       if (err) return console.error(`Failed to build ${name}`, err)
 
       console.log(`Successfully built ${name}`)
 
-      deploy(info.dir, repo.clone_url, 'gh-pages', opts.deploy, (err) => {
+      deploy(info.dir, repo.ssh_url, 'gh-pages', opts.deploy, (err) => {
         if (err) return console.error(`Failed to deploy ${name}`, err)
         console.log(`Successfully deployed ${name}`)
       })

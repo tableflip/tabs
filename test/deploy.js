@@ -5,7 +5,7 @@ var deploy = require('../deploy')()
 test('Should successfully deploy', (t) => {
   t.plan(2)
 
-  var repo = 'https://github.com/alanshaw/tableflip-www.git'
+  var repo = 'git@github.com:alanshaw/tableflip-www.git'
   var commit = 'master'
   var opts = {stdout: process.stdout, stderr: process.stderr}
 

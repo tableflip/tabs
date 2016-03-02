@@ -29,9 +29,9 @@ test('Should build initiate build and deploy when webhook received', (t) => {
       payload: {
         ref: 'refs/heads/master',
         repository: {
-          clone_url: 'https://github.com/TEST/FAKE.git'
+          ssh_url: 'git@github.com:TEST/FAKE.git'
         },
-        head_commmit: {
+        head_commit: {
           id: 'a0342ede2ea56r799d8ad40937267ba2875e9d88'
         }
       }
