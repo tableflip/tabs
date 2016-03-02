@@ -10,7 +10,7 @@ module.exports = (build, deploy, opts, cb) => {
       res.statusCode = 404
       res.end('no such location')
     })
-  }).listen(opts.port, cb)
+  }).listen(opts.webhook.port, cb)
 
   handler.on('error', (err) => console.error('Webhook handler error', err))
 
