@@ -2,7 +2,10 @@ var execFile = require('./exec-file')
 
 var Git = {
   checkout (cwd, commit, opts, cb) {
-    execFile('git', ['checkout', commit], cwd, opts, (err) => cb(err))
+    var args = ['checkout']
+    if (opts && opts.orphan) args.push('--orphan')
+    args.push(commit)
+    execFile('git', args, cwd, opts, (err) => cb(err))
   },
 
   pull (cwd, remote, branch, opts, cb) {

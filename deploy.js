@@ -47,26 +47,28 @@ function deploy (task, cb) {
       tasks = tasks.concat([
         (cb) => Git.branch.list.all(repoDir, task.options, cb),
         (branches, cb) => {
-          if (branches.indexOf(task.branch) > -1) return cb()
+          if (branches.indexOf(task.branch) > -1) {
+            return Git.checkout(repoDir, task.branch, task.options, cb)
+          }
 
           // Is existing remote branch?
           if (branches.indexOf(`remotes/origin/${task.branch}`) > -1) {
             var branchOpts = xtend(task.options, {startPoint: `origin/${task.branch}`})
-            return Git.branch(repoDir, task.branch, branchOpts, cb)
+
+            return Git.branch(repoDir, task.branch, branchOpts, (err) => {
+              if (err) return cb(err)
+
+              Git.checkout(repoDir, task.branch, task.options, (err) => {
+                if (err) return cb(err)
+                if (!exists) return cb() // No need to pull if it was just cloned
+                Git.pull(repoDir, 'origin', task.branch, task.options, cb)
+              })
+            })
           }
 
           // Create if not exists
-          Git.branch(repoDir, task.branch, task.options, (err) => {
-            if (err) return cb(err)
-            Git.push(repoDir, 'origin', task.branch, task.options, cb)
-          })
-        },
-        (cb) => {
-          Git.checkout(repoDir, task.branch, task.options, (err) => {
-            if (err) return cb(err)
-            if (!exists) return cb() // No need to pull if it was just cloned
-            Git.pull(repoDir, 'origin', task.branch, task.options, cb)
-          })
+          var checkoutOpts = xtend(task.options, {orphan: true})
+          Git.checkout(repoDir, task.branch, checkoutOpts, cb)
         }
       ])
 
