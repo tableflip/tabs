@@ -4,6 +4,7 @@ var Async = require('async')
 var rimraf = require('rimraf')
 var cpr = require('cpr')
 var xtend = require('xtend')
+var parse = require('github-url')
 var Git = require('./git')
 
 module.exports = () => {
@@ -24,8 +25,8 @@ module.exports = () => {
 }
 
 function deploy (task, cb) {
-  var buildDir = Path.resolve(task.dir, '..')
-  var repoDir = Path.join(buildDir, getRepoName(task.repo, task.branch))
+  var userDir = Path.resolve(task.dir, '..')
+  var repoDir = Path.join(userDir, `${parse(task.repo).project}#${task.branch}`)
 
   Async.waterfall([
     // Determine if newly created or existing
@@ -39,7 +40,7 @@ function deploy (task, cb) {
         tasks = [
           (cb) => {
             var cloneOpts = xtend(task.options, {cloneDir: repoDir})
-            Git.clone(buildDir, task.repo, cloneOpts, cb)
+            Git.clone(userDir, task.repo, cloneOpts, cb)
           }
         ]
       }
@@ -94,8 +95,4 @@ function deploy (task, cb) {
     if (err) return rimraf(repoDir, () => cb(err))
     cb()
   })
-}
-
-function getRepoName (url, branch) {
-  return url.split('/').pop().replace('.git', '') + '#' + branch
 }

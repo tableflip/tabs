@@ -2,6 +2,7 @@ var Path = require('path')
 var Fs = require('fs')
 var mkdirp = require('mkdirp')
 var Async = require('async')
+var parse = require('github-url')
 var Git = require('./git')
 var Npm = require('./npm')
 
@@ -23,12 +24,13 @@ module.exports = () => {
 }
 
 function build (task, cb) {
-  var buildDir = task.options.dir
-  var repoDir = Path.join(buildDir, getRepoName(task.repo))
+  var urlInfo = parse(task.repo)
+  var userDir = Path.join(task.options.dir, urlInfo.user)
+  var repoDir = Path.join(userDir, urlInfo.project)
 
   Async.waterfall([
-    // Ensure build dir exists
-    (cb) => mkdirp(buildDir, cb),
+    // Ensure user build dir exists
+    (cb) => mkdirp(userDir, cb),
     // Determine if newly created or existing
     (made, cb) => Fs.access(repoDir, Fs.F_OK, (err) => cb(null, !err)),
     // Clone or pull the repo
@@ -39,7 +41,7 @@ function build (task, cb) {
           Git.pull(repoDir, 'origin', 'master', task.options, cb)
         })
       } else {
-        Git.clone(buildDir, task.repo, task.options, cb)
+        Git.clone(userDir, task.repo, task.options, cb)
       }
     },
     // Checkout the commit
@@ -49,8 +51,4 @@ function build (task, cb) {
     // npm run build
     (cb) => Npm.run(repoDir, 'build', task.options, cb)
   ], (err) => cb(err, {dir: repoDir}))
-}
-
-function getRepoName (url) {
-  return url.split('/').pop().replace('.git', '')
 }
