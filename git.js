@@ -1,6 +1,6 @@
-var execFile = require('./exec-file')
+const execFile = require('./exec-file')
 
-var Git = {
+const Git = {
   checkout (cwd, commit, opts, cb) {
     var args = ['checkout']
     if (opts && opts.orphan) args.push('--orphan')

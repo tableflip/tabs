@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-var Path = require('path')
+const Path = require('path')
 
-var config = require('rc')('builder', {
+const config = require('rc')('builder', {
   webhook: {
     path: '/webhook',
     secret: '(╯°□°）╯︵TABLEFLIP',
@@ -17,11 +17,8 @@ var config = require('rc')('builder', {
   }
 })
 
-var createWebhook = require('../webhook')
+const createWebhook = require('../webhook')
 
-var build = require('../build')()
-var deploy = require('../deploy')()
-
-var webhook = createWebhook(build, deploy, config, () => {
+const webhook = createWebhook(config, () => {
   console.log('Webhook server running on %j', webhook.server.address())
 })

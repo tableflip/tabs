@@ -1,5 +1,5 @@
-var test = require('tape')
-var build = require('../build')()
+const test = require('tape')
+const build = require('../build')
 
 test('Should successfully build', (t) => {
   t.plan(1)

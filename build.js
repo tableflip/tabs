@@ -1,32 +1,23 @@
-var Path = require('path')
-var Fs = require('fs')
-var mkdirp = require('mkdirp')
-var rimraf = require('rimraf')
-var Async = require('async')
-var parse = require('github-url')
-var Git = require('./git')
-var Npm = require('./npm')
+const Path = require('path')
+const Fs = require('fs')
+const mkdirp = require('mkdirp')
+const rimraf = require('rimraf')
+const Async = require('async')
+const parse = require('github-url')
+const Git = require('./git')
+const Npm = require('./npm')
 
-module.exports = () => {
-  var buildQueues = {}
-
-  return (repo, commit, opts, cb) => {
-    if (!cb) {
-      cb = opts
-      opts = {}
-    }
-
-    opts = opts || {}
-    opts.dir = opts.dir || Path.join(process.cwd(), 'build')
-
-    var queue = buildQueues[repo] = buildQueues[repo] || Async.queue(build)
-    return queue.push({repo, commit, options: opts}, cb)
+module.exports = function build (repo, commit, opts, cb) {
+  if (!cb) {
+    cb = opts
+    opts = {}
   }
-}
 
-function build (task, cb) {
-  var urlInfo = parse(task.repo)
-  var userDir = Path.join(task.options.dir, urlInfo.user)
+  opts = opts || {}
+  opts.dir = opts.dir || Path.join(process.cwd(), 'build')
+
+  var urlInfo = parse(repo)
+  var userDir = Path.join(opts.dir, urlInfo.user)
   var repoDir = Path.join(userDir, urlInfo.project)
 
   Async.waterfall([
@@ -37,20 +28,20 @@ function build (task, cb) {
     // Clone or pull the repo
     (exists, cb) => {
       if (exists) {
-        Git.checkout(repoDir, 'master', task.options, (err) => {
+        Git.checkout(repoDir, 'master', opts, (err) => {
           if (err) return cb(err)
-          Git.pull(repoDir, 'origin', 'master', task.options, cb)
+          Git.pull(repoDir, 'origin', 'master', opts, cb)
         })
       } else {
-        Git.clone(userDir, task.repo, task.options, cb)
+        Git.clone(userDir, repo, opts, cb)
       }
     },
     // Checkout the commit
-    (cb) => Git.checkout(repoDir, task.commit, task.options, cb),
+    (cb) => Git.checkout(repoDir, commit, opts, cb),
     // npm install
-    (cb) => Npm.install(repoDir, task.options, cb),
+    (cb) => Npm.install(repoDir, opts, cb),
     // npm run build
-    (cb) => Npm.run(repoDir, 'build', task.options, cb)
+    (cb) => Npm.run(repoDir, 'build', opts, cb)
   ], (err) => {
     if (err) return rimraf(repoDir, () => cb(err))
     cb(err, {dir: repoDir})

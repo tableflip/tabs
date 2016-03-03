@@ -1,32 +1,23 @@
-var Path = require('path')
-var Fs = require('fs')
-var Async = require('async')
-var rimraf = require('rimraf')
-var cpr = require('cpr')
-var xtend = require('xtend')
-var parse = require('github-url')
-var Git = require('./git')
+const Path = require('path')
+const Fs = require('fs')
+const Async = require('async')
+const rimraf = require('rimraf')
+const cpr = require('cpr')
+const xtend = require('xtend')
+const parse = require('github-url')
+const Git = require('./git')
 
-module.exports = () => {
-  var deployQueues = {}
-
-  // Deploy built `dir` to `repo` on `branch`
-  return (dir, repo, branch, opts, cb) => {
-    if (!cb) {
-      cb = opts
-      opts = {}
-    }
-
-    opts = opts || {}
-
-    var queue = deployQueues[repo] = deployQueues[repo] || Async.queue(deploy)
-    return queue.push({dir, repo, branch, options: opts}, cb)
+// Deploy built `dir` to `repo` on `branch`
+module.exports = function deploy (dir, repo, branch, opts, cb) {
+  if (!cb) {
+    cb = opts
+    opts = {}
   }
-}
 
-function deploy (task, cb) {
-  var userDir = Path.resolve(task.dir, '..')
-  var repoDir = Path.join(userDir, `${parse(task.repo).project}#${task.branch}`)
+  opts = opts || {}
+
+  var userDir = Path.resolve(dir, '..')
+  var repoDir = Path.join(userDir, `${parse(repo).project}#${branch}`)
 
   Async.waterfall([
     // Determine if newly created or existing
@@ -39,37 +30,37 @@ function deploy (task, cb) {
       if (!exists) {
         tasks = [
           (cb) => {
-            var cloneOpts = xtend(task.options, {cloneDir: repoDir})
-            Git.clone(userDir, task.repo, cloneOpts, cb)
+            var cloneOpts = xtend(opts, {cloneDir: repoDir})
+            Git.clone(userDir, repo, cloneOpts, cb)
           }
         ]
       }
 
       tasks = tasks.concat([
-        (cb) => Git.branch.list.all(repoDir, task.options, cb),
+        (cb) => Git.branch.list.all(repoDir, opts, cb),
         (branches, cb) => {
-          if (branches.indexOf(task.branch) > -1) {
-            return Git.checkout(repoDir, task.branch, task.options, cb)
+          if (branches.indexOf(branch) > -1) {
+            return Git.checkout(repoDir, branch, opts, cb)
           }
 
           // Is existing remote branch?
-          if (branches.indexOf(`remotes/origin/${task.branch}`) > -1) {
-            var branchOpts = xtend(task.options, {startPoint: `origin/${task.branch}`})
+          if (branches.indexOf(`remotes/origin/${branch}`) > -1) {
+            var branchOpts = xtend(opts, {startPoint: `origin/${branch}`})
 
-            return Git.branch(repoDir, task.branch, branchOpts, (err) => {
+            return Git.branch(repoDir, branch, branchOpts, (err) => {
               if (err) return cb(err)
 
-              Git.checkout(repoDir, task.branch, task.options, (err) => {
+              Git.checkout(repoDir, branch, opts, (err) => {
                 if (err) return cb(err)
                 if (!exists) return cb() // No need to pull if it was just cloned
-                Git.pull(repoDir, 'origin', task.branch, task.options, cb)
+                Git.pull(repoDir, 'origin', branch, opts, cb)
               })
             })
           }
 
           // Create if not exists
-          var checkoutOpts = xtend(task.options, {orphan: true})
-          Git.checkout(repoDir, task.branch, checkoutOpts, cb)
+          var checkoutOpts = xtend(opts, {orphan: true})
+          Git.checkout(repoDir, branch, checkoutOpts, cb)
         }
       ])
 
@@ -78,17 +69,17 @@ function deploy (task, cb) {
     // Remove old files
     (cb) => rimraf(Path.join(repoDir, '**/!(.git)'), {dot: true}, cb),
     // Copy new files
-    (cb) => cpr(Path.join(task.dir, 'dist'), repoDir, {overwrite: true}, cb),
+    (cb) => cpr(Path.join(dir, 'dist'), repoDir, {overwrite: true}, cb),
     // Detect if something changed
-    (files, cb) => Git.isClean(repoDir, task.options, cb),
+    (files, cb) => Git.isClean(repoDir, opts, cb),
     // Commit & push
     (isClean, cb) => {
       if (isClean) return cb()
 
       Async.waterfall([
-        (cb) => Git.add.all(repoDir, task.options, cb),
-        (cb) => Git.commit(repoDir, 'Built by builder', task.options, cb),
-        (cb) => Git.push(repoDir, 'origin', task.branch, task.options, cb)
+        (cb) => Git.add.all(repoDir, opts, cb),
+        (cb) => Git.commit(repoDir, 'Built by builder', opts, cb),
+        (cb) => Git.push(repoDir, 'origin', branch, opts, cb)
       ], cb)
     }
   ], (err) => {

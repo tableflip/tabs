@@ -1,5 +1,5 @@
-var execFile = require('./exec-file')
-var xtend = require('xtend')
+const execFile = require('./exec-file')
+const xtend = require('xtend')
 
 module.exports = {
   install (path, opts, cb) {

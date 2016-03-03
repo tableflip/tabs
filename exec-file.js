@@ -1,5 +1,5 @@
-var ChildProcess = require('child_process')
-var xtend = require('xtend')
+const ChildProcess = require('child_process')
+const xtend = require('xtend')
 
 module.exports = function (file, args, cwd, opts, cb) {
   if (!cb) {

@@ -1,7 +1,10 @@
 const Http = require('http')
 const createHandler = require('github-webhook-handler')
+const Async = require('async')
+const build = require('./build')
+const deploy = require('./deploy')
 
-module.exports = (build, deploy, opts, cb) => {
+module.exports = (opts, cb) => {
   var handler = createHandler(opts.webhook)
 
   var server = Http.createServer((req, res) => {
@@ -11,6 +14,8 @@ module.exports = (build, deploy, opts, cb) => {
       res.end('no such location')
     })
   }).listen(opts.webhook.port, cb)
+
+  var queues = {}
 
   handler.on('error', (err) => console.error('Webhook handler error', err))
 
@@ -30,19 +35,32 @@ module.exports = (build, deploy, opts, cb) => {
       return console.log(`Ignoring push event to ${ref} on ${name}`)
     }
 
-    console.log(`Commencing build ${name}`)
+    queues[repo.ssh_url] = queues[repo.ssh_url] || Async.queue(buildAndDeploy)
 
-    build(repo.ssh_url, headCommit.id, opts.build, (err, info) => {
-      if (err) return console.error(`Failed to build ${name}`, err)
+    console.log(`Queuing build ${name}`)
 
-      console.log(`Successfully built ${name}`)
-
-      deploy(info.dir, repo.ssh_url, 'gh-pages', opts.deploy, (err) => {
-        if (err) return console.error(`Failed to deploy ${name}`, err)
-        console.log(`Successfully deployed ${name}`)
-      })
+    queues[repo.ssh_url].push({
+      url: repo.ssh_url,
+      commit: headCommit.id,
+      options: opts
     })
   })
 
-  return {server, handler}
+  return {server, handler, queues}
+}
+
+function buildAndDeploy (task, cb) {
+  var name = `${task.url} @ ${task.commit}`
+  console.log(`Commencing build ${name}`)
+
+  build(task.url, task.commit, task.options.build, (err, info) => {
+    if (err) return console.error(`Failed to build ${name}`, err)
+
+    console.log(`Successfully built ${name}`)
+
+    deploy(info.dir, task.url, 'gh-pages', task.options.deploy, (err) => {
+      if (err) return console.error(`Failed to deploy ${name}`, err)
+      console.log(`Successfully deployed ${name}`)
+    })
+  })
 }

@@ -1,6 +1,6 @@
-var test = require('tape')
-var build = require('../build')()
-var deploy = require('../deploy')()
+const test = require('tape')
+const build = require('../build')
+const deploy = require('../deploy')
 
 test('Should successfully deploy', (t) => {
   t.plan(2)
