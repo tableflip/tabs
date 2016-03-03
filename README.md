@@ -46,7 +46,7 @@ build(repo, commit, opts, (err, info) => {
 
 **deploy.js**
 ```js
-var build = require('./deploy')
+var deploy = require('./deploy')
 
 var dir = '/path/to/built/tableflip-www'
 var repo = 'https://github.com/tableflip/tableflip-www.git'
