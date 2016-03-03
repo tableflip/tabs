@@ -1,6 +1,7 @@
 var Path = require('path')
 var Fs = require('fs')
 var mkdirp = require('mkdirp')
+var rimraf = require('rimraf')
 var Async = require('async')
 var parse = require('github-url')
 var Git = require('./git')
@@ -50,5 +51,8 @@ function build (task, cb) {
     (cb) => Npm.install(repoDir, task.options, cb),
     // npm run build
     (cb) => Npm.run(repoDir, 'build', task.options, cb)
-  ], (err) => cb(err, {dir: repoDir}))
+  ], (err) => {
+    if (err) return rimraf(repoDir, () => cb(err))
+    cb(err, {dir: repoDir})
+  })
 }
