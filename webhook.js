@@ -43,6 +43,9 @@ module.exports = (opts, cb) => {
       url: repo.ssh_url,
       commit: headCommit.id,
       options: opts
+    }, (err) => {
+      if (err) return console.error(`Failed to build/deploy ${name}`, err)
+      console.log(`Successfully deployed ${name}`)
     })
   })
 
@@ -54,13 +57,8 @@ function buildAndDeploy (task, cb) {
   console.log(`Commencing build ${name}`)
 
   build(task.url, task.commit, task.options.build, (err, info) => {
-    if (err) return console.error(`Failed to build ${name}`, err)
-
+    if (err) return cb(err)
     console.log(`Successfully built ${name}`)
-
-    deploy(info.dir, task.url, 'gh-pages', task.options.deploy, (err) => {
-      if (err) return console.error(`Failed to deploy ${name}`, err)
-      console.log(`Successfully deployed ${name}`)
-    })
+    deploy(info.dir, task.url, 'gh-pages', task.options.deploy, cb)
   })
 }
