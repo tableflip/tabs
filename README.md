@@ -29,7 +29,7 @@ TABLEFLIP Automated Build System.
 3. in **Webhooks & services** add a new webhook with the following info:
     * Payload URL: `http://tabs.tableflip.io:7777/webhook`
     * Content type: `application/json`
-    * Secret: **Retrieve from secrets.yaml from tabs-infrastructure project**
+    * Secret: **Retrieve from secrets.yaml for tabs-infrastructure project**
 
 ## Programmatic usage
 
