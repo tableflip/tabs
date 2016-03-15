@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const Path = require('path')
 
-const config = require('rc')('builder', {
+const config = require('rc')('tabs', {
   webhook: {
     path: '/webhook',
     secret: '(╯°□°）╯︵TABLEFLIP',

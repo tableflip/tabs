@@ -78,7 +78,7 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
 
       Async.waterfall([
         (cb) => Git.add.all(repoDir, opts, cb),
-        (cb) => Git.commit(repoDir, 'Built by builder', opts, cb),
+        (cb) => Git.commit(repoDir, 'Built by TABS', opts, cb),
         (cb) => Git.push(repoDir, 'origin', branch, opts, cb)
       ], cb)
     }

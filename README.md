@@ -1,10 +1,12 @@
-# Builder
+# TABS
+
+TABLEFLIP Automated Build System.
 
 ## Getting started
 
 1. Install Node.js
 2. Install dependencies `npm install`
-3. (Optional) Add builder config file `.builderrc` (defaults below):
+3. (Optional) Add TABS config file `.tabsrc` (defaults below):
 
     ```js
     {
@@ -23,11 +25,11 @@
 ## Configure a site to be built
 
 1. Navigate to **Settings** for the repo
-2. In **Collaborators**, add `tableflip-deploy` as a collaborator with **write** access
+2. In **Collaborators**, add `tableflip-tabs` as a collaborator with **write** access
 3. in **Webhooks & services** add a new webhook with the following info:
-    * Payload URL: `http://builder.tableflip.io:7777/webhook`
+    * Payload URL: `http://tabs.tableflip.io:7777/webhook`
     * Content type: `application/json`
-    * Secret: **Retrieve from secrets.yaml in infrastructure project**
+    * Secret: **Retrieve from secrets.yaml from tabs-infrastructure project**
 
 ## Programmatic usage
 
