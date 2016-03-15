@@ -1,7 +1,7 @@
 {
-  "name": "the-platform-builder",
+  "name": "tabs",
   "version": "0.0.0",
-  "description": "Builder for the TABLEFLIP platform",
+  "description": "TABLEFLIP Automated Build System",
   "private": true,
   "main": "build.js",
   "scripts": {
@@ -24,17 +24,17 @@
     "standard": "^6.0.7"
   },
   "bin": {
-    "the-platform-builder": "server.js"
+    "tabs": "server.js"
   },
   "directories": {
     "test": "test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tableflip/the-platform-builder.git"
+    "url": "git+https://github.com/tableflip/tabs.git"
   },
   "bugs": {
-    "url": "https://github.com/tableflip/the-platform-builder/issues"
+    "url": "https://github.com/tableflip/tabs/issues"
   },
-  "homepage": "https://github.com/tableflip/the-platform-builder#readme"
+  "homepage": "https://github.com/tableflip/tabs#readme"
 }
