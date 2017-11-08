@@ -40,7 +40,7 @@ const Git = {
     execFile('git', 'status', cwd, opts, (err, stdout) => {
       if (err) return cb(err)
 
-      const clean = /working (directory)|(tree) clean/.test(stdout.toString())
+      const clean = /working directory|tree clean/.test(stdout.toString())
 
       cb(null, clean)
     })
