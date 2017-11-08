@@ -16,11 +16,11 @@
     "github-webhook-handler": "^0.7.0",
     "mkdirp": "^0.5.1",
     "rc": "^1.1.6",
-    "rimraf": "^2.5.2",
-    "tape": "^4.4.0"
+    "rimraf": "^2.5.2"
   },
   "devDependencies": {
-    "standard": "^10.0.3"
+    "standard": "^10.0.3",
+    "tape": "^4.8.0"
   },
   "bin": {
     "tabs": "server.js"
