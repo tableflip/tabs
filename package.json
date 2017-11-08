@@ -1,6 +1,6 @@
 {
   "name": "tabs",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "TABLEFLIP Automated Build System",
   "private": true,
   "main": "build.js",
@@ -36,7 +36,7 @@
     "url": "https://github.com/tableflip/tabs/issues"
   },
   "homepage": "https://github.com/tableflip/tabs#readme",
-  "engines" : {
-    "node" : ">=6"
+  "engines": {
+    "node": ">=6"
   }
 }
