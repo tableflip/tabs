@@ -3,7 +3,6 @@ const Fs = require('fs')
 const Async = require('async')
 const rimraf = require('rimraf')
 const cpr = require('cpr')
-const xtend = require('xtend')
 const parse = require('github-url')
 const Git = require('./git')
 
@@ -16,21 +15,21 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
 
   opts = opts || {}
 
-  var userDir = Path.resolve(dir, '..')
-  var repoDir = Path.join(userDir, `${parse(repo).project}#${branch}`)
+  const userDir = Path.resolve(dir, '..')
+  const repoDir = Path.join(userDir, `${parse(repo).project}#${branch}`)
 
   Async.waterfall([
     // Determine if newly created or existing
     (cb) => Fs.access(repoDir, Fs.F_OK, (err) => cb(null, !err)),
     // Clone or pull the repo
     (exists, cb) => {
-      var tasks = []
+      let tasks = []
 
       // Add the clone task if not exists
       if (!exists) {
         tasks = [
           (cb) => {
-            var cloneOpts = xtend(opts, {cloneDir: repoDir})
+            const cloneOpts = Object.assign({}, opts, {cloneDir: repoDir})
             Git.clone(userDir, repo, cloneOpts, cb)
           }
         ]
@@ -45,7 +44,7 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
 
           // Is existing remote branch?
           if (branches.indexOf(`remotes/origin/${branch}`) > -1) {
-            var branchOpts = xtend(opts, {startPoint: `origin/${branch}`})
+            const branchOpts = Object.assign({}, opts, {startPoint: `origin/${branch}`})
 
             return Git.branch(repoDir, branch, branchOpts, (err) => {
               if (err) return cb(err)
@@ -59,7 +58,7 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
           }
 
           // Create if not exists
-          var checkoutOpts = xtend(opts, {orphan: true})
+          const checkoutOpts = Object.assign({}, opts, {orphan: true})
           Git.checkout(repoDir, branch, checkoutOpts, cb)
         }
       ])

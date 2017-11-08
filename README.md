@@ -35,11 +35,11 @@ TABLEFLIP Automated Build System.
 
 **build.js**
 ```js
-var build = require('./build')
+const build = require('./build')
 
-var repo = 'git@github.com:tableflip/tableflip-www.git'
-var commit = 'a0342ede2ea56c799d8ad40937267ba2875e9d88'
-var opts = {stdout: process.stdout, stderr: process.stderr}
+const repo = 'git@github.com:tableflip/tableflip-www.git'
+const commit = 'a0342ede2ea56c799d8ad40937267ba2875e9d88'
+const opts = {stdout: process.stdout, stderr: process.stderr}
 
 build(repo, commit, opts, (err, info) => {
   console.log(`Built in ${info.dir}`)
@@ -48,11 +48,11 @@ build(repo, commit, opts, (err, info) => {
 
 **deploy.js**
 ```js
-var deploy = require('./deploy')
+const deploy = require('./deploy')
 
-var dir = '/path/to/built/tableflip-www'
-var repo = 'https://github.com/tableflip/tableflip-www.git'
-var opts = {stdout: process.stdout, stderr: process.stderr}
+const dir = '/path/to/built/tableflip-www'
+const repo = 'https://github.com/tableflip/tableflip-www.git'
+const opts = {stdout: process.stdout, stderr: process.stderr}
 
 // Deploy built `dir` to `repo` on `branch`
 deploy(dir, repo, 'gh-pages', opts, (err) => {

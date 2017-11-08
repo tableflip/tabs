@@ -10,18 +10,17 @@
   },
   "author": "TABLEFLIP",
   "dependencies": {
-    "async": "^1.5.2",
-    "cpr": "^1.0.0",
+    "async": "^2.6.0",
+    "cpr": "^3.0.1",
     "github-url": "^1.2.0",
-    "github-webhook-handler": "^0.5.0",
+    "github-webhook-handler": "^0.7.0",
     "mkdirp": "^0.5.1",
     "rc": "^1.1.6",
     "rimraf": "^2.5.2",
-    "tape": "^4.4.0",
-    "xtend": "^4.0.1"
+    "tape": "^4.4.0"
   },
   "devDependencies": {
-    "standard": "^6.0.7"
+    "standard": "^10.0.3"
   },
   "bin": {
     "tabs": "server.js"
@@ -36,5 +35,8 @@
   "bugs": {
     "url": "https://github.com/tableflip/tabs/issues"
   },
-  "homepage": "https://github.com/tableflip/tabs#readme"
+  "homepage": "https://github.com/tableflip/tabs#readme",
+  "engines" : {
+    "node" : ">=6"
+  }
 }

@@ -5,9 +5,9 @@ const build = require('./build')
 const deploy = require('./deploy')
 
 module.exports = (opts, cb) => {
-  var handler = createHandler(opts.webhook)
+  const handler = createHandler(opts.webhook)
 
-  var server = Http.createServer((req, res) => {
+  const server = Http.createServer((req, res) => {
     handler(req, res, (err) => {
       if (err) console.error(err)
       res.statusCode = 404
@@ -15,21 +15,21 @@ module.exports = (opts, cb) => {
     })
   }).listen(opts.webhook.port, cb)
 
-  var queues = {}
+  const queues = {}
 
   handler.on('error', (err) => console.error('Webhook handler error', err))
 
   // https://developer.github.com/v3/activity/events/types/#pushevent
   handler.on('push', (event) => {
-    var repo = event.payload.repository
-    var headCommit = event.payload.head_commit
+    const repo = event.payload.repository
+    const headCommit = event.payload.head_commit
 
     if (!repo || !headCommit) {
       return console.warn('Ignoring unexpected push payload', event.payload)
     }
 
-    var name = `${repo.ssh_url} @ ${headCommit.id}`
-    var ref = event.payload.ref
+    const name = `${repo.ssh_url} @ ${headCommit.id}`
+    const ref = event.payload.ref
 
     if (ref !== 'refs/heads/master') {
       return console.log(`Ignoring push event to ${ref} on ${name}`)
@@ -53,7 +53,7 @@ module.exports = (opts, cb) => {
 }
 
 function buildAndDeploy (task, cb) {
-  var name = `${task.url} @ ${task.commit}`
+  const name = `${task.url} @ ${task.commit}`
   console.log(`Commencing build ${name}`)
 
   build(task.url, task.commit, task.options.build, (err, info) => {

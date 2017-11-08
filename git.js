@@ -2,7 +2,7 @@ const execFile = require('./exec-file')
 
 const Git = {
   checkout (cwd, commit, opts, cb) {
-    var args = ['checkout']
+    const args = ['checkout']
     if (opts && opts.orphan) args.push('--orphan')
     args.push(commit)
     execFile('git', args, cwd, opts, (err) => cb(err))
@@ -13,13 +13,13 @@ const Git = {
   },
 
   clone (cwd, repo, opts, cb) {
-    var args = ['clone', repo]
+    const args = ['clone', repo]
     if (opts.cloneDir) args.push(opts.cloneDir)
     execFile('git', args, cwd, opts, (err) => cb(err))
   },
 
   branch (cwd, name, opts, cb) {
-    var args = ['branch', name]
+    const args = ['branch', name]
     if (opts && opts.startPoint) args.push(opts.startPoint)
     execFile('git', args, cwd, opts, (err) => cb(err))
   },
@@ -39,7 +39,10 @@ const Git = {
   isClean (cwd, opts, cb) {
     execFile('git', 'status', cwd, opts, (err, stdout) => {
       if (err) return cb(err)
-      cb(null, stdout.toString().indexOf('working directory clean') > -1)
+
+      const clean = /working (directory)|(tree) clean/.test(stdout.toString())
+
+      cb(null, clean)
     })
   }
 }
@@ -52,8 +55,8 @@ Git.branch.list.all = (cwd, opts, cb) => {
   execFile('git', ['branch', '--list', '--all'], cwd, opts, (err, stdout) => {
     if (err) return cb(err)
 
-    var branches = stdout.toString().trim().split('\n').map((branch) => {
-      return branch.trim().replace(/[\s\*]/g, '')
+    const branches = stdout.toString().trim().split('\n').map((branch) => {
+      return branch.trim().replace(/[\s*]/g, '')
     })
 
     cb(null, branches)

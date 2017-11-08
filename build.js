@@ -16,9 +16,9 @@ module.exports = function build (repo, commit, opts, cb) {
   opts = opts || {}
   opts.dir = opts.dir || Path.join(process.cwd(), 'build')
 
-  var urlInfo = parse(repo)
-  var userDir = Path.join(opts.dir, urlInfo.user)
-  var repoDir = Path.join(userDir, urlInfo.project)
+  const urlInfo = parse(repo)
+  const userDir = Path.join(opts.dir, urlInfo.user)
+  const repoDir = Path.join(userDir, urlInfo.project)
 
   Async.waterfall([
     // Ensure user build dir exists

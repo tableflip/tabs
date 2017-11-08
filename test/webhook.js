@@ -5,7 +5,7 @@ const createWebhook = require('../webhook')
 test('Should build initiate build and deploy when webhook received', (t) => {
   t.plan(4)
 
-  var config = {
+  const config = {
     webhook: {
       path: '/webhook',
       secret: '(╯°□°）╯︵TABLEFLIP',
@@ -13,33 +13,33 @@ test('Should build initiate build and deploy when webhook received', (t) => {
     }
   }
 
-  var mockBuild = (url, commit, opts, cb) => process.nextTick(() => {
+  const mockBuild = (url, commit, opts, cb) => process.nextTick(() => {
     t.ok(true, 'Build triggered')
     cb(null, {dir: '/FAKE/BUILD/DIR'})
   })
 
-  var mockDeploy = (dir, repo, branch, opts, cb) => process.nextTick(() => {
+  const mockDeploy = (dir, repo, branch, opts, cb) => process.nextTick(() => {
     t.ok(true, 'Deploy triggered')
     cb()
   })
 
-  var mockBuildAndDeploy = (task, cb) => {
+  const mockBuildAndDeploy = (task, cb) => {
     mockBuild(task.url, task.commit, task.options.build, (err, info) => {
       if (err) return cb(err)
       mockDeploy(info.dir, task.url, 'gh-pages', task.options.deploy, cb)
     })
   }
 
-  var webhook = createWebhook(config, () => {
+  const webhook = createWebhook(config, () => {
     t.ok(true, 'Webhook server started')
 
-    var repo = 'git@github.com:TEST/FAKE.git'
+    const repo = 'git@github.com:TEST/FAKE.git'
 
     // Use a queue that uses our mock task processor
     webhook.queues[repo] = Async.queue(mockBuildAndDeploy)
 
     // Fake a push event
-    var event = {
+    const event = {
       payload: {
         ref: 'refs/heads/master',
         repository: {
