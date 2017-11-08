@@ -1,6 +1,6 @@
 {
   "name": "tabs",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "TABLEFLIP Automated Build System",
   "private": true,
   "main": "build.js",
