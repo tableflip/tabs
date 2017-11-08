@@ -44,8 +44,7 @@ module.exports = (opts, cb) => {
       commit: headCommit.id,
       options: opts
     }, (err) => {
-      if (err) return console.error(`Failed to build/deploy ${name}`, err)
-      console.log(`Successfully deployed ${name}`)
+      if (err) console.error(`Failed to build/deploy ${name}`, err)
     })
   })
 
@@ -58,7 +57,19 @@ function buildAndDeploy (task, cb) {
 
   build(task.url, task.commit, task.options.build, (err, info) => {
     if (err) return cb(err)
+
     console.log(`Successfully built ${name}`)
-    deploy(info.dir, task.url, 'gh-pages', task.options.deploy, cb)
+
+    deploy(info.dir, task.url, 'gh-pages', task.options.deploy, (err, deployed) => {
+      if (err) return cb(err)
+
+      if (!deployed) {
+        console.log(`Deployment for ${name} was not needed`)
+      } else {
+        console.log(`Successfully deployed ${name}`)
+      }
+
+      cb()
+    })
   })
 }

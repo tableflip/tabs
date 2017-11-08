@@ -73,16 +73,19 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
     (files, cb) => Git.isClean(repoDir, opts, cb),
     // Commit & push
     (isClean, cb) => {
-      if (isClean) return cb()
+      if (isClean) return cb(null, false)
 
       Async.waterfall([
         (cb) => Git.add.all(repoDir, opts, cb),
         (cb) => Git.commit(repoDir, 'Built by TABS', opts, cb),
         (cb) => Git.push(repoDir, 'origin', branch, opts, cb)
-      ], cb)
+      ], (err) => {
+        if (err) return cb(err)
+        cb(null, true)
+      })
     }
-  ], (err) => {
+  ], (err, deployed) => {
     if (err) return rimraf(repoDir, () => cb(err))
-    cb()
+    cb(null, deployed)
   })
 }
