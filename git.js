@@ -36,6 +36,10 @@ const Git = {
     execFile('git', ['commit', '-m', msg], cwd, opts, (err) => cb(err))
   },
 
+  reset () {
+    throw new Error('Not implemented')
+  },
+
   isClean (cwd, opts, cb) {
     execFile('git', 'status', cwd, opts, (err, stdout) => {
       if (err) return cb(err)
@@ -45,6 +49,10 @@ const Git = {
       cb(null, clean)
     })
   }
+}
+
+Git.reset.hard = (cwd, opts, cb) => {
+  execFile('git', ['reset', '--hard'], cwd, opts, (err) => cb(err))
 }
 
 Git.branch.list = () => {

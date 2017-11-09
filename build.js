@@ -44,6 +44,11 @@ module.exports = function build (repo, commit, opts, cb) {
     (cb) => Npm.run(repoDir, 'build', opts, cb)
   ], (err) => {
     if (err) return rimraf(repoDir, () => cb(err))
-    cb(err, {dir: repoDir})
+
+    // Reset repo incase build process changed any files (it shouldn't have) but
+    // for example, npm install may have edited package-lock.json
+    Git.reset.hard(repoDir, opts, (err) => {
+      cb(err, {dir: repoDir})
+    })
   })
 }
