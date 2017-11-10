@@ -23,8 +23,9 @@ test('Should successfully deploy', (t) => {
     Fs.writeFile(Path.join(distDir, 'TEST'), `${Date.now()}`, (err) => {
       t.ifError(err, 'No error writing file to ensure changes')
 
-      deploy(info.dir, repo, 'gh-pages', opts, (err) => {
+      deploy(info.dir, repo, 'gh-pages', opts, (err, deployed) => {
         t.ifError(err, 'No error deploying')
+        t.ok(deployed, 'Deployment happened')
         t.end()
       })
     })
