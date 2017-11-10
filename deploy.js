@@ -67,6 +67,7 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
     },
     // Remove old files
     (cb) => {
+      console.log('REMOVE OLD FILES')
       const rimrafOpts = {
         glob: {
           nosort: true,
