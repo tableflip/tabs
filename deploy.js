@@ -67,12 +67,13 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
     },
     // Remove old files
     (cb) => {
+      console.log('REMOVE OLD FILES')
       const rimrafOpts = {
         glob: {
           nosort: true,
           silent: true,
           dot: true,
-          ignore: '**/.git/**'
+          ignore: Path.join(repoDir, '.git', '**')
         }
       }
       rimraf(Path.join(repoDir, '**'), rimrafOpts, cb)
