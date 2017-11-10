@@ -1,0 +1,42 @@
+{
+  "name": "tabs",
+  "version": "3.0.2",
+  "description": "TABLEFLIP Automated Build System",
+  "private": true,
+  "main": "build.js",
+  "scripts": {
+    "start": "node bin/server",
+    "test": "standard && tape test/*.js"
+  },
+  "author": "TABLEFLIP",
+  "dependencies": {
+    "async": "^2.6.0",
+    "cpr": "^3.0.1",
+    "github-url": "^1.2.0",
+    "github-webhook-handler": "^0.7.0",
+    "mkdirp": "^0.5.1",
+    "rc": "^1.1.6",
+    "rimraf": "^2.5.2"
+  },
+  "devDependencies": {
+    "standard": "^10.0.3",
+    "tape": "^4.8.0"
+  },
+  "bin": {
+    "tabs": "server.js"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tableflip/tabs.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tableflip/tabs/issues"
+  },
+  "homepage": "https://github.com/tableflip/tabs#readme",
+  "engines": {
+    "node": ">=6"
+  }
+}
