@@ -66,7 +66,10 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
       Async.waterfall(tasks, cb)
     },
     // Remove old files
-    (cb) => rimraf(Path.join(repoDir, '**/!(.git)'), {dot: true}, cb),
+    (cb) => {
+      const rimrafOpts = {glob: {nosort: true, silent: true, dot: true}}
+      rimraf(Path.join(repoDir, '**/!(.git)'), rimrafOpts, cb)
+    },
     // Copy new files
     (cb) => cpr(Path.join(dir, 'dist'), repoDir, {overwrite: true}, cb),
     // Detect if something changed
