@@ -6,7 +6,7 @@ const build = require('../build')
 const deploy = require('../deploy')
 
 test('Should successfully deploy', (t) => {
-  t.plan(3)
+  t.plan(4)
 
   const repo = 'git@github.com:alanshaw/tableflip-www.git'
   const commit = 'master'
