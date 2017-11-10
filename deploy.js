@@ -67,8 +67,15 @@ module.exports = function deploy (dir, repo, branch, opts, cb) {
     },
     // Remove old files
     (cb) => {
-      const rimrafOpts = {glob: {nosort: true, silent: true, dot: true}}
-      rimraf(Path.join(repoDir, '**/!(.git)'), rimrafOpts, cb)
+      const rimrafOpts = {
+        glob: {
+          nosort: true,
+          silent: true,
+          dot: true,
+          ignore: '**/.git/**'
+        }
+      }
+      rimraf(Path.join(repoDir, '**'), rimrafOpts, cb)
     },
     // Copy new files
     (cb) => cpr(Path.join(dir, 'dist'), repoDir, {overwrite: true}, cb),
